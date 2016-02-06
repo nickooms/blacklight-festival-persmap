@@ -1,0 +1,26 @@
+{
+  "name": "blacklight-festival-persmap",
+  "version": "1.0.0",
+  "description": "Persmap Blacklight Festival",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickooms/blacklight-festival-persmap.git"
+  },
+  "author": "Nick Ooms",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nickooms/blacklight-festival-persmap/issues"
+  },
+  "homepage": "https://github.com/nickooms/blacklight-festival-persmap#readme",
+  "dependencies": {
+    "jsdom": "^8.0.2",
+    "kerberos": "0.0.18",
+    "mongoose": "^4.4.1",
+    "node-exceptions": "^1.0.0",
+    "reindeer.css": "^0.1.2"
+  }
+}

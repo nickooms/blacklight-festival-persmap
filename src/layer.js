@@ -4,24 +4,19 @@ const Path = require('./Path'),
 model = require('./model')
 
 class Layer {
-	constructor(g) {
+	constructor(g, drawing_id) {
 		this.name = g.getAttribute('id')
 		this.display = g.getAttribute('display') === 'visible'
 		this.paths = [...g.querySelectorAll('g')]
-			.map(g => [...g.querySelectorAll('path')]
-			.map(path => new Path(path)))
+			.map(p => [...p.querySelectorAll('path')].map(path => new Path(path)))
+		this._ = new model.Layer(Object.assign({}, this))
 	}
+	get id() { return this._._id }
 	save() {
-		return new Promise((resolve, reject) => {
-			const layer = new model.Layer({
-				name: this.name,
-				display: this.display
-			})
-			layer.save(err => {
-				if (err) reject(new Error(err))
-				resolve(layer)
-			})
-		})
+		return new Promise((resolve, reject) => this._.save(err => {
+			if (err) reject(new Error(err))
+			resolve(this)
+		}))
 	}
 }
 

@@ -17,10 +17,14 @@
   },
   "homepage": "https://github.com/nickooms/blacklight-festival-persmap#readme",
   "dependencies": {
+    "ansi-escapes": "^1.1.1",
+    "chalk": "^1.1.1",
+    "cli-progress": "^1.1.1",
     "jsdom": "^8.0.2",
     "kerberos": "0.0.18",
     "mongoose": "^4.4.1",
     "node-exceptions": "^1.0.0",
+    "progress": "^1.1.8",
     "reindeer.css": "^0.1.2"
   }
 }

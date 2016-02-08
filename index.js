@@ -1,14 +1,5 @@
 'use strict'
-
 const
-
-progressBarLibs = {
-	'progress': '',
-	'cli-progress': ''
-},
-progressBarLibName = 'cli-progress',
-progressBarLib = progressBarLibs[progressBarLibName],
-progressBarDebug = false,
 //svgFilename = 'data/Podium A v1-3D.svg',
 svgFilename = 'data/Podium C v1-3D.svg',
 host = '127.0.0.1',
@@ -19,7 +10,7 @@ http = require('http'),
 jsdom = require('jsdom'),
 async = require('async'),
 chalk = require('chalk'),
-ProgressBar = require(progressBarLibName),
+cli = require('clui'),
 
 db = require('./src/db'),
 Exception = require('./src/errors'),
@@ -27,9 +18,10 @@ Drawing = require('./src/drawing'),
 Layer = require('./src/layer'),
 Path = require('./src/path'),
 model = require('./src/model'),
-
-blue = chalk.bgBlue('+'),
-white = chalk.bgWhite('-'),
+ProgressBar = require('./src/progress-bar').ProgressBar,
+progressBarLibs = require('./src/progress-bar').progressBarLibs,
+progressBarLibName = require('./src/progress-bar').progressBarLibName,
+progressBarLib = require('./src/progress-bar').progressBarLib,
 
 log = msg => (object => {
 	console.log.call(object || {}, msg)
@@ -37,6 +29,14 @@ log = msg => (object => {
 })(msg),
 
 error = e => console.error(e),
+
+consoleSize = () => {
+	let
+		lineBuffer = new cli.LineBuffer({ x: 0, y: 0, width: 'console', height: 'console' }),
+		width = lineBuffer.width(),
+		height = lineBuffer.height()
+	return { width, height }
+},
 
 readFile = path => new Promise((resolve, reject) => {
 	fs.readFile(`${__dirname}/${path}`, 'utf8', (err, data) => {
@@ -135,9 +135,6 @@ loadSvgFile = svgFilename => {
 		svg = null,
 		drawing = null
 	return getFileSize(svgFilename)
-		//.then(size => {
-			//log('Loading SVG file...')
-		//})
 		.then(() => getDrawing(svgFilename))
 		.then(x => svg = x)
 		.then(svg => new Drawing(svgFilename))
@@ -159,97 +156,42 @@ getFileSize = filename => new Promise((resolve, reject) => {
 }),
 
 getFile = filename => new Promise((resolve, reject) => {
-	if (progressBarDebug) {
-		console.log('filename =', filename)
-		console.log('progressBarLibName =', progressBarLibName)
-		console.log('progressBarLib =', progressBarLib)
-		console.log('progressBarLib == undefined =', progressBarLib == undefined)
-	}
-	let
-		fd = fs.openSync(filename, 'r'),
-		stats = fs.fstatSync(fd),
-		bufferSize = stats.size,
-		chunkSize = 512,
-		buffer = new Buffer(bufferSize),
-		bytesRead = 0,
-		bar = null,
-		fmt = null,
-		elements = []
-
-	switch(progressBarLibName) {
-		case 'progress':
-			fmt = `loading ${file(filename)} [:bar] :percent :etas`
-			bar = new ProgressBar(fmt, {
-				complete: '=',
-				incomplete: ' ',
-				width: 50,
-				total: bufferSize,
-				clear: true
-			})
-			break
-		case 'cli-progress':
-			fmt = `loading ${file(filename)} [{bar}] {percentage}% {eta}s`
-			bar = new ProgressBar.Bar({
-				format: fmt,
-				fps: 6,
-				clearOnComplete: true,
-				barCompleteString: white,
-				barIncompleteString: blue,
-				barsize: 50,
-				total: bufferSize,
-				hideCursor: true
-			})
-			bar.start(bufferSize, 0)
-			break;
-		default:
-			console.log(`progressBarLib ${progressBarLibName} not found`)
-			break
-	}
-	if (progressBarDebug) {
-		console.log('fmt =', fmt)
-		console.log('bar =', bar)
-		console.log('bar == undefined =', bar == undefined)
-	}
-	async.whilst(
-		() => (bytesRead < bufferSize),
-		done => {
-			if ((bytesRead + chunkSize) > bufferSize) {
-				chunkSize = (bufferSize - bytesRead)
-			}
-			fs.read(fd, buffer, bytesRead, chunkSize, bytesRead, function(err, bytes, buff) {
-				if (err) return done(err)
-				let buffRead = buff.slice(bytesRead, bytesRead + chunkSize)
-				// do something with buffRead
-				bytesRead += chunkSize
-				switch(progressBarLibName) {
-					case 'progress':
-						bar.tick(chunkSize)
-						break
-					case 'cli-progress':
-						bar.update(bytesRead)
-						break
-					default:
-						console.log(`progressBarLib ${progressBarLibName} not found`)
-						break
+	try {
+		let
+			fd = fs.openSync(filename, 'r'),
+			stats = fs.fstatSync(fd),
+			bufferSize = stats.size,
+			chunkSize = 512,
+			buffer = new Buffer(bufferSize),
+			bytesRead = 0,
+			name = file(filename),
+			width = consoleSize().width - (25 + name.length),
+			elements = [],
+			bar = progressBarLib.start(name, width, bufferSize)
+		async.whilst(
+			() => (bytesRead < bufferSize),
+			done => {
+				if ((bytesRead + chunkSize) > bufferSize) {
+					chunkSize = (bufferSize - bytesRead)
 				}
-				done()
-			})
-		},
-		err => {
-			if (err) console.log(err)
-			fs.close(fd)
-			switch(progressBarLibName) {
-				case 'progress':
-					break
-				case 'cli-progress':
-					bar.stop()
-					break
-				default:
-					console.log(`progressBarLib ${progressBarLibName} not found`)
-					break
+				fs.read(fd, buffer, bytesRead, chunkSize, bytesRead, function(err, bytes, buff) {
+					if (err) return done(err)
+					let buffRead = buff.slice(bytesRead, bytesRead + chunkSize)
+					// do something with buffRead
+					bytesRead += chunkSize
+					progressBarLib.update(bytesRead, chunkSize)
+					done()
+				})
+			},
+			err => {
+				if (err) console.log(err)
+				fs.close(fd)
+				progressBarLib.stop()
 			}
-		}
-	)
+		)
+	} catch(e) {
+		console.trace(e)
+	}
 })
 
 db.connect()
@@ -257,10 +199,8 @@ db.connect()
 		log('MongoDB connected')
 		http.createServer((req, res) => {
 			let url = req.url
-			//console.log(url)
 			switch(url) {
 				case '/load_file':
-					//console.log('getFile(svgFilename)')
 					//loadSvgFile(svgFilename)
 					getFile(svgFilename)
 					break

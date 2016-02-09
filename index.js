@@ -61,6 +61,10 @@ getFilename = url => {
 		case '/style.css':
 		case '/reindeer.css':
 		case '/favicon.ico':
+		case '/PodiumAv1-3D.js':
+		case '/Podium.js':
+		case '/svg.js':
+		//case '/object_hash.js':
 			return url.substr(1)
 		default:
 			return url
@@ -201,8 +205,8 @@ db.connect()
 			let url = req.url
 			switch(url) {
 				case '/load_file':
-					//loadSvgFile(svgFilename)
-					getFile(svgFilename)
+					loadSvgFile(svgFilename)
+					//getFile(svgFilename)
 					break
 				default: break
 			}

@@ -2,12 +2,22 @@
 	<head>
 		<link rel="stylesheet" href="reindeer.min.css">
 		<link rel="stylesheet" href="style.css">
-		<script src="http://localhost:666/vorlon.js"></script>
+		<!--<script src="http://localhost:666/vorlon.js"></script>-->
+		<!--<script src="Podium.js"></script>-->
+		<script src="PodiumAv1-3D.js"></script>
+		<script src="svg.js"></script>
+		<script src="object_hash.js"></script>
+		<!--<script src="hashcode.min.js"></script>-->
 	</head>
 	<body>
-		<div class="row">
-			<a class="btn btn-orange" href="load_file">Load File</a>
-			<a class="btn btn-orange" href="layers">Layers</a>
+		<div class="row-center">
+			<button class="box btn btn-asphalt" href="load_file">Load File</button>
+			<button class="box btn btn-asphalt" href="layers" id="layers">
+				<span>Layers</span>
+				<div id="layers" class="box"></div>
+			</button>
 		</div>
+		
+		<div id="svg"></div>
 	</body>
 </html>

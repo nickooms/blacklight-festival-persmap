@@ -1,27 +1,115 @@
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:svg="http://www.w3.org/2000/svg">
-  <xsl:output method="text" indent="no"/>
+<stylesheet version="1.0" xmlns="http://www.w3.org/1999/XSL/Transform" xmlns:svg="http://www.w3.org/2000/svg">
+  <output method="text" indent="no"/>
 
-  <xsl:strip-space elements="*"/>
+  <strip-space elements="*"/>
 
-  <xsl:template match="/">{<xsl:apply-templates select="svg:svg"/>}</xsl:template>
+  <template match="/">
+  	<text>var Podium = {
+</text>
+  	<apply-templates select="svg:svg"/>
+  	<text>}
+</text>
+  </template>
 
-  <xsl:template match="svg:svg">layers: [
-<xsl:apply-templates select="svg:g[@id]"/>
-]</xsl:template>
+  <template match="svg:svg">
+  	<text>"layers": [
+</text>
+  	<apply-templates select="svg:g[@id]"/>
+  	<text>
+]</text>
+  </template>
 
-  <xsl:template match="svg:title"></xsl:template>
-  <xsl:template match="svg:desc"></xsl:template>
+  <template match="svg:title"></template>
+  <template match="svg:desc"></template>
 
-  <xsl:template match="svg:g[@id]">new Layer({<xsl:apply-templates select="@id"/>,<xsl:apply-templates select="@display"/>, groups: <xsl:apply-templates select="*"/> })<xsl:if test="position() != last()"><xsl:text>,
-</xsl:text></xsl:if></xsl:template>
+  <template match="svg:g[@id]">
+  	<text>{"T":"Group",</text>
+  	<apply-templates select="@id"/>
+  	<apply-templates select="@display"/>
+  	<text>"children":[
+</text>
+  	<apply-templates select="*"/>
+  	<text>
+]}</text>
+  	<if test="position() != last()">
+  		<text>,</text>
+  	</if>
+  </template>
 
-  <xsl:template match="@id"> name: '<xsl:value-of select="."/>' </xsl:template>
-  <xsl:template match="@display"> display: <xsl:choose>
-  	<xsl:when test=". = 'visible'">true</xsl:when>
-  	<xsl:otherwise>false</xsl:otherwise>
-  </xsl:choose></xsl:template>
+  <template match="svg:g">
+  	<text>{"T":"Group","children":[
+</text>
+  	<apply-templates select="*"/>
+  	<text>
+]}</text>
+  	<if test="position() != last()">
+  		<text>,</text>
+  	</if>
+  </template>
 
-  <xsl:template match="svg:path">path</xsl:template>
+  <template match="svg:path">
+  	<text>{"T":"Path",</text>
+  	<apply-templates select="@fill"/>
+  	<apply-templates select="@fill-rule"/>
+  	<apply-templates select="@stroke"/>
+  	<apply-templates select="@stroke-width"/>
+  	<apply-templates select="@d"/>
+  	<text>
+}</text>
+  	<if test="position() != last()">
+  		<text>,</text>
+  	</if>
+  </template>
 
-  <xsl:template match="*">[<xsl:apply-templates select="svg:path"/>]</xsl:template>
-</xsl:stylesheet>
+  <template match="svg:g/@id">
+  	<text>"name":"</text>
+  	<value-of select="."/>
+  	<text>",</text>
+  </template>
+
+  <template match="svg:g/@display">
+  	<text>"display":</text>
+  	<choose>
+  		<when test=".='visible'">true</when>
+  		<otherwise>false</otherwise>
+  	</choose>
+  	<text>,</text>
+  </template>
+
+  <template match="svg:path/@fill">
+  	<text>"fill":"</text>
+  	<value-of select="."/>
+  	<text>",</text>
+  </template>
+
+  <template match="svg:path/@fill-rule">
+  	<text>"fill-rule":"</text>
+  	<value-of select="."/>
+  	<text>",</text>
+  </template>
+
+  <template match="svg:path/@stroke">
+  	<text>"stroke":"</text>
+  	<value-of select="."/>
+  	<text>",</text>
+  </template>
+
+  <template match="svg:path/@stroke-width">
+  	<text>"stroke-width":"</text>
+  	<value-of select="."/>
+  	<text>",</text>
+  </template>
+
+  <template match="svg:path/@d">
+  	<text>"d":"</text>
+  	<value-of select="."/>
+  	<text>"</text>
+  </template>
+
+  <template match="*">
+  	<text>[</text>
+  	<apply-templates select="svg:path"/>
+  	<text>]</text>
+  </template>
+
+</stylesheet>

@@ -61,15 +61,15 @@ toggleLayersList = function(event) {
 	}
 	div.innerHTML = `<ul id="layers" class="box box-asphalt">${
 		Podium.map(layer =>
-			`<li class="box btn btn-asphalt menu" layer-id="${layer.hash}" style="border: 1px solid #fff;">
-			<div class="checkbox-design1">
-					<input id="chk${layer.hash}" class="regular-checkbox" type="checkbox" checked>
-					<label for="chk${layer.hash}">${layer.name}</label>
-			</div>
-				</li>`).join('')
+			`<li class="box btn btn-asphalt menu" layer-id="${layer.hash}" style="border: 1px solid #fff;">`+
+			//<div class="checkbox-design1">
+					`<input id="chk${layer.hash}" class="regular-checkbox" type="checkbox" checked>
+					<label for="chk${layer.hash}">${layer.name}</label>`+
+			//</div>
+				`</li>`).join('')
 			}</ul>`
 	var checkboxes = Array.from($$('input'));
-	checkboxes.forEach(chk => chk.parentNode.addEventListener('click', toggleLayer, false))
+	//checkboxes.forEach(chk => chk.parentNode.addEventListener('click', toggleLayer, false))
 	div.style.display = 'block';
 },
 

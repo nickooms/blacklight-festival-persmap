@@ -53,8 +53,8 @@ input[type=checkbox] {
   }
   
   .regular-checkbox + label {
-    /*background-color: green;
-    border: 1px solid green;*/
+    background-color: green;
+    border: 1px solid green;
     padding: 15px;
     border-radius: 5px;
     display: inline-block;

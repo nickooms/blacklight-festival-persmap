@@ -1,0 +1,68 @@
+body {
+  /*background: #34485e;*/
+  /*padding: 60px;*/
+}
+
+button {
+  border: 0;
+  background: none;
+  outline: none;
+}
+
+.menu-button {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  cursor: hand;
+  margin: 8px;
+  /*width: 300px;
+  height: 300px;*/
+}
+
+.menu-button__icon, .menu-button__icon:before, .menu-button__icon:after {
+  position: absolute;
+  left: 0;
+  /*width: 300px;*/
+  width: 30px;
+  /*height: 50px;*/
+  height: 5px;
+  /*border-radius: 25px;*/
+  border-radius: 2.5px;
+  background-color: #000;/* #fff;*/
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+
+.menu-button__icon {
+  /*top: 125px;*/
+  top: 12.5px;
+}
+.menu-button__icon:before, .menu-button__icon:after {
+  content: '';
+}
+.menu-button__icon:before {
+  /*top: -90px;*/
+  top: -9px;
+}
+.menu-button__icon:after {
+  /*top  90px;*/
+  top: 9px;
+}
+
+.menu-button--open .menu-button__icon {
+  background-color: transparent;
+  -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+}
+.menu-button--open .menu-button__icon:before, .menu-button--open .menu-button__icon:after {
+  top: 0;
+  background-color: #e84c3c;
+}
+.menu-button--open .menu-button__icon:before {
+  -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+.menu-button--open .menu-button__icon:after {
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+}

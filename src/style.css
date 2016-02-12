@@ -1,16 +1,25 @@
 body {
+	margin: 0px;
 	/*background-color: grey;*/
 }
 
-div#layers {
+.range-slider {
+  margin: 0px;
+}
+
+svg {
+	margin-top: -24px;
+}
+
+div#layers, div#sizes, div#styles {
 	background-color: #486684;
-	position: absolute;
-	display: none;
+	/*position: absolute;
+	display: none;*/
 	padding: 3px;
 	margin: 3px;
 }
 
-ul#layers {
+ul#layers, ul#sizes, ul#styles {
 	background-color: #34495e;
 	border: 1px solid #fff;
 	text-align: left;
@@ -21,7 +30,64 @@ ul#layers {
 li.menu {
 	white-space: nowrap;
 	text-align: left;
+	font-size: 13px;
 }
+
+label.slider {
+	color: #fff;
+	width: 100%;
+}
+
+div#sizes > fieldset, div#layers > fieldset, div#styles > fieldset {
+	/*width: 300px;*/
+	/*width: 800px;*/
+}
+
+input[type=range] {
+	/*width: 700px;*/
+}
+
+fieldset > * {
+	vertical-align: middle;
+}
+
+legend {
+	cursor: hand;
+	font-size: 13px;
+	color: #fff;
+}
+
+div#controls {
+	visibility: hidden;
+	top: 0px;
+	transition: all 0.5s ease;
+}
+
+div#controls.open {
+	visibility: visible;
+}
+
+.leftlabel, .rightlabel {
+	display: inline-block;
+	width: 50px;
+	padding: 2px;
+	text-align: center;
+	font-size: 13px;
+}
+
+.leftlabel {
+	/*background-color: red;*/
+	color: white;
+}
+.rightlabel {
+	/*background-color: purple;*/
+	color: white;
+}
+
+/*label {
+	display: inline-block;
+	width: 50px;
+}*/
 
 /*input[type=checkbox]:checked + .checkbox:before {
 	content: "\2713";
@@ -48,13 +114,13 @@ input[type=checkbox] {
 	box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8); 
 	border-radius: 3px;
 }*/
-  .regular-checkbox {
+  /*.regular-checkbox {
     display: none;
   }
   
   .regular-checkbox + label {
-    background-color: green;
-    border: 1px solid green;
+		background-color: #34495e;
+    border: 1px solid #34495e;
     padding: 15px;
     border-radius: 5px;
     display: inline-block;
@@ -72,7 +138,7 @@ input[type=checkbox] {
   }
   
   .regular-checkbox:active + label:active {
-    background-color: #62b362;
+    background-color: #486684;
   }
   
   input[type=checkbox] {
@@ -129,7 +195,7 @@ input[type=checkbox] {
     left: 60px;
     background: #26ca28;
   }
-  /* CHECKBOX DESIGN 2 */
+  
   
   .checkbox-design2 {
     width: 28px;
@@ -185,7 +251,6 @@ input[type=checkbox] {
   .checkbox-design2 input[type=checkbox]:checked + label:after {
     opacity: 1;
   }
-  /* CHECKBOX DESIGN 3 */
   
   input[type=checkbox] {
     visibility: hidden;
@@ -263,4 +328,4 @@ input[type=checkbox] {
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
     filter: alpha(opacity=100);
     opacity: 1;
-  }
+  }*/

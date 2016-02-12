@@ -4,7 +4,8 @@
   "description": "Persmap Blacklight Festival",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scss": "node-sass --output-style compressed -o dist/css src/scss"
   },
   "repository": {
     "type": "git",
@@ -37,5 +38,8 @@
     "reindeer.css": "^0.1.2",
     "smooth-progress": "^1.0.4",
     "supports-color": "^3.1.2"
+  },
+  "devDependencies": {
+    "node-sass": "^3.4.2"
   }
 }

@@ -205,8 +205,8 @@ db.connect()
 			let url = req.url
 			switch(url) {
 				case '/load_file':
-					loadSvgFile(svgFilename)
-					//getFile(svgFilename)
+					//loadSvgFile(svgFilename)
+					getFile(svgFilename)
 					break
 				default: break
 			}

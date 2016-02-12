@@ -23,6 +23,10 @@ let
 		var h = sum(o);
 		//console.log(h);
 		o.hash = h;
+		/*if (o.T == 'Path') {
+			var d = o.d;
+			console.log(d);
+		}*/
 		if (o.children) {
 			for (var i = 0; i < o.children.length; i++) {
 				var child = o.children[i];

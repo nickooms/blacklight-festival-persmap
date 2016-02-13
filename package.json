@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "scss": "node-sass --output-style compressed -o dist/css src/scss"
+    "scss": "node-sass --output-style compressed -o dist/css src/scss",
+    "autoprefixer": "postcss -u autoprefixer -r dist/css/*"
   },
   "repository": {
     "type": "git",
@@ -40,6 +41,9 @@
     "supports-color": "^3.1.2"
   },
   "devDependencies": {
-    "node-sass": "^3.4.2"
+    "autoprefixer": "^6.3.2",
+    "eslint": "^2.0.0",
+    "node-sass": "^3.4.2",
+    "postcss-cli": "^2.5.1"
   }
 }

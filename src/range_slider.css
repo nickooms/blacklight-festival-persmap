@@ -68,7 +68,7 @@ body {
 }
 
 .range-slider__value {
-  display: inline-block;
+  /*display: inline-block;*/
   position: relative;
   width: 60px;
   color: #fff;

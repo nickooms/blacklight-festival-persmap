@@ -23,6 +23,14 @@ class BBOX {
 	get height() {
 		return Math.abs(this._max.y - this._min.y)
 	}
+	grow(size) {
+		size = size || 1;
+		this._min.x -= size;
+		this._min.y -= size;
+		this._max.x += size;
+		this._max.y += size;
+		return this
+	}
 }
 
 class Point {

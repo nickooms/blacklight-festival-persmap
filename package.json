@@ -6,7 +6,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "scss": "node-sass --output-style compressed -o dist/css src/scss",
-    "autoprefixer": "postcss -u autoprefixer -r dist/css/*"
+    "autoprefixer": "postcss -u autoprefixer -r dist/css/*",
+    "lint": "eslint src/js",
+    "uglify": "mkdir -p dist/js &amp;&amp; uglifyjs src/js/*.js -m -o dist/js/app.js &amp;&amp; uglifyjs src/js/*.js -m -c -o dist/js/app.min.js",
+    "imagemin": "imagemin src/images dist/images -p",
+    "icons": "svgo -f src/images/icons &amp;&amp; mkdir -p dist/images && svg-sprite-generate -d src/images/icons -o dist/images/icons.svg",
+    "serve": "browser-sync start --server --files 'dist/css/*.css, dist/js/*.js'",
+    "watch:css": "onchange 'src/scss/*.scss' -- npm run build:css",
+    "watch:js": "onchange 'src/js/*.js' -- npm run build:js",
+    "watch": "npm-run-all --parallel serve watch:*",
+    "build:css": "npm run scss && npm run autoprefixer",
+		"build:images": "npm run imagemin && npm run icons",
+		"build:js": "npm run lint && npm run uglify",
+		"build": "npm-run-all build:*"
   },
   "repository": {
     "type": "git",
@@ -42,8 +54,16 @@
   },
   "devDependencies": {
     "autoprefixer": "^6.3.2",
+    "browser-sync": "^2.11.1",
     "eslint": "^2.0.0",
+    "imagemin-cli": "^2.1.0",
     "node-sass": "^3.4.2",
-    "postcss-cli": "^2.5.1"
+    "npm-run-all": "^1.5.1",
+    "onchange": "^2.0.0",
+    "parallelshell": "^2.0.0",
+    "postcss-cli": "^2.5.1",
+    "svg-sprite-generator": "0.0.7",
+    "svgo": "^0.6.1",
+    "uglify-js": "^2.6.1"
   }
 }

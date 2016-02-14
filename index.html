@@ -1,0 +1,73 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="range_slider.css">
+		<link rel="stylesheet" href="menu-button.css">
+		<link rel="stylesheet" href="style.css">
+		<script src="PodiumAv1-3D.js"></script>
+		<script src="bbox.js"></script>
+		<script src="svg.js"></script>
+		<script src="object_hash.js"></script>
+		<script src="range_slider.js"></script>
+		<script src="menu-button.js"></script>
+	</head>
+	<body>
+		<button class="menu-button js-menu-button">
+			<span class="menu-button__icon"></span>
+		</button>
+		<div id="svg"></div>
+		<div id="controls" style="position: absolute; opacity: 1;">
+			<div id="layers" class="box"></div>
+			<div id="styles" class="styles">
+				<fieldset>
+					<legend>Styles</legend>
+					<ul id="styles" style="list-style-type: none; display: none;"></ul>
+				</fieldset>
+			</div>
+			<div id="sizes" class="sizes">
+				<fieldset>
+					<legend>Width</legend>
+					<label for="slider-min-width">From :</label>
+					<div class="range-slider">
+						<input id="slider-min-width" class="range-slider__range" type="range" value="1" min="1" max="500" list="width">
+  					<span class="range-slider__value">0</span>
+  				</div>
+  				<label for="slider-max-width">To :</label>
+  				<div class="range-slider">
+						<input id="slider-max-width" class="range-slider__range" type="range" value="500" min="1" max="500" list="width">
+  					<span class="range-slider__value">0</span>
+  				</div>
+				</fieldset>
+				<fieldset>
+					<legend>Height</legend>
+					<label for="slider-min-height">From :</label>
+					<div class="range-slider">
+						<input id="slider-min-height" class="range-slider__range" type="range" value="1" min="1" max="500" list="height">
+  					<span class="range-slider__value">0</span>
+  				</div>
+  				<label for="slider-max-height">To :</label>
+  				<div class="range-slider">
+						<input id="slider-max-height" class="range-slider__range" type="range" value="500" min="1" max="500" list="height">
+  					<span class="range-slider__value">0</span>
+  				</div>
+				</fieldset>
+				<fieldset>
+					<legend>Zoom</legend>
+					<label for="slider-zoom-left">Left :</label>
+					<div class="range-slider">
+						<input id="slider-zoom-left" class="range-slider__range" type="range" value="1" min="1" max="500">
+  					<span class="range-slider__value">0</span>
+  				</div>
+  				<label for="slider-zoom-right">Right :</label>
+  				<div class="range-slider">
+						<input id="slider-zoom-right" class="range-slider__range" type="range" value="500" min="1" max="500" list="height">
+  					<span class="range-slider__value">0</span>
+  				</div>
+				</fieldset>
+				<button id="btnFilterSizes">Filter</button>
+				<button class="box btn btn-asphalt" href="load_file">Load File</button>
+			</div>
+		</div>
+		<datalist id="width"></datalist>
+		<datalist id="height"></datalist>
+	</body>
+</html>

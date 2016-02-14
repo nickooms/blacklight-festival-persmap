@@ -59,6 +59,7 @@ getFilename = url => {
 		case '/layers':
 			return 'index.html'
 		case '/style.css':
+		case '/style-svg.css':
 		case '/reindeer.css':
 		case '/favicon.ico':
 		case '/PodiumAv1-3D.js':

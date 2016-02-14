@@ -1,0 +1,11 @@
+path:hover {
+	stroke: pink;
+}
+
+g#group-select-lines:hover {
+	fill-opacity: 0.5;
+}
+
+g#group-select-lines:hover line {
+	stroke-dasharray: 0.1, 0.1;
+}

@@ -24,6 +24,65 @@ class SVG extends Element {
 		}
 		return element
 	}
+	static Layer(x) {
+		let id = `group${x.hash}`,
+			name = x.name,
+			display = x.display ? 'visible' : 'hidden',
+			attrs = { id, name, display },
+			g = SVG.create('g', attrs);
+			x.children.map(SVG.Group).forEach(group => g.appendChild(group));
+		//console.log(x.children);
+		return g;
+	}
+	static Group(x) {
+		let id = `group${x.hash}`,
+			attrs = { id },
+			g = SVG.create('g', attrs);
+		x.children.map(SVG.GroupOrPath).forEach(gop => g.appendChild(gop));
+		/*x.children.forEach(p => p.addEventListener('click', function(evt) {
+			console.log(6666666)
+		}, true);*/
+		return g;
+	}
+	static GroupOrPath(x) {
+		switch (x.T) {
+			case 'Group':
+				return SVG.Group(x)
+			case 'Path':
+				return SVG.Path(x)
+			default:
+				break;
+		}
+	}
+	static Path(x) {
+		let properties = ['fill', 'fill-rule', 'stroke', 'stroke-width'],
+			id = `path${x.hash}`,
+			d = x.d,
+			cursor = 'pointer',
+			bbox = getBBOX(x);
+		bboxTotal.add(bbox.min);
+		bboxTotal.add(bbox.max);
+		let width = parseFloat(bbox.width.toFixed(0)),
+			height = parseFloat(bbox.height.toFixed(0)),
+			attrs = { id, d, cursor, width, height };
+		for (var j = 0; j < properties.length; j++) {
+			var propertyName = properties[j],
+				property = x[propertyName];
+			if (property)	{
+				if (!propertyValues.has(propertyName)) {
+					propertyValues.set(propertyName, new Set());
+				}
+				propertyValues.get(propertyName).add(property)
+				//if (propertyName === 'stroke-width' && property === '0.5') property = '0.1';
+				//s += `${propertyName}="${property}" `;
+				attrs[propertyName] = property;
+			}
+		}
+		let path = SVG.create('path', attrs);
+		widths.add(width);
+		heights.add(height);
+		return path;
+	}
 }
 
 var
@@ -61,11 +120,9 @@ load = function() {
 	//var div = $('div#svg');
 	//console.log(svg);
 	$('div#svg').appendChild(svg);
-	Podium.map(x => {
-		console.log(x);
-	});
+	Podium.map(SVG.Layer).forEach(x => svg.appendChild(x));
 	//svg.innerHTML = defs;
-	createGroups(Podium).forEach(group => svg.appendChild(group));
+	//createGroups(Podium).forEach(group => svg.appendChild(group));
 	//$('div#svg').innerHTML = createSVG(Podium);
 	initLayersList();
 	initStylesList();
@@ -93,12 +150,12 @@ load = function() {
 		//if (i < 10) console.dir(p);
 		//p.addEventListener('mouseover', mouseover, false);
 		//p.addEventListener('mouseout', mouseout, false);
-		p.addEventListener('click', function(evt) {
+		/*p.addEventListener('click', function(evt) {
 			console.log(777);
-		})
-		p.onclick = function(evt) {
+		})*/
+		/*p.onclick = function(evt) {
 			console.log(888);
-		}
+		}*/
 	});
 	[...$$('legend')].forEach(legend => {
 		legend.addEventListener('click', clickLegend);
@@ -127,7 +184,22 @@ load = function() {
 		<polygon points="412.25,291.54 373.73,291.83 373.75,174.49 412.27,175.29 412.25,291.54" fill="${Fluo.Blue}"/>`;*/
 	//Podium B
 	var polygons = ``;
-	$('svg').innerHTML += polygons;
+	//$('svg').innerHTML += polygons;
+	svg.addEventListener('click', function(evt) {
+		var target = evt.target
+		switch (target.tagName) {
+			case 'path':
+				click(target);
+				break;
+			case 'g':
+				if (target.id === 'group-select-lines') {
+
+				}
+				break;
+			default:
+				break;
+		}
+	})
 },
 
 /*createSVG = function(layers) {
@@ -251,9 +323,9 @@ createPath = function(pa) {
 		}
 	}
 	var p = SVG.create('path', props);
-	p.addEventListener('click', function() {
+	/*p.addEventListener('click', function() {
 		alert(999);
-	})
+	})*/
 	return p;
 },
 
@@ -295,9 +367,10 @@ createPaths = function(paths) {
 	return ps;*/
 },
 
-click = function(evt) {
-	console.log(666);
-	var element = evt.target,
+click = function(evt, target) {
+	//console.log(666);
+	//var element = evt.target,
+	var element = target,
 		d = element.getAttribute('d'),
 		points = getPoints({ d }),
 		//lines = [],

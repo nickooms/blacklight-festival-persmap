@@ -63,6 +63,8 @@ getFilename = url => {
 		case '/reindeer.css':
 		case '/favicon.ico':
 		case '/PodiumAv1-3D.js':
+		case '/PodiumBv1-3D.js':
+		case '/PodiumCv1-3D.js':
 		case '/Podium.js':
 		case '/svg.js':
 		//case '/object_hash.js':

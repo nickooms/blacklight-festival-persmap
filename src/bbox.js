@@ -2,8 +2,7 @@
 
 class BBOX {
 	constructor() {
-		this._min = new Point(Infinity, Infinity)
-		this._max = new Point(-Infinity, -Infinity)
+		this.reset()
 	}
 	add(point) {
 		this._min.x = Math.min(this._min.x, point.x)
@@ -30,6 +29,13 @@ class BBOX {
 		this._max.x += size;
 		this._max.y += size;
 		return this
+	}
+	reset() {
+		this._min = new Point(Infinity, Infinity)
+		this._max = new Point(-Infinity, -Infinity)
+	}
+	toString() {
+		return `${this.width.toFixed(2)}x${this.height.toFixed(2)}`
 	}
 }
 

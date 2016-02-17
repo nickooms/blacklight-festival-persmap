@@ -10,7 +10,7 @@ let
 	docSource = fs.readFileSync('cd.xml', 'utf8'),
 
 	stylesheet = libxslt.parse(stylesheetSource)*/
-	filename = '../data/Podium A v1-3D',
+	filename = '../data/Podium B v1-3D',
 	data = fs.readFileSync(filename + '.svg', 'utf8'),
 	stylesheetTextOut = libxslt.parse(fs.readFileSync('svg.xsl', 'utf8')),
 	result = stylesheetTextOut.apply(data)

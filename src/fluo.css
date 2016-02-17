@@ -1,0 +1,56 @@
+.fluo-yellow {
+	color: #fcfe04;
+}
+.fluo-pink {
+	color: #fc4efc;
+}
+.fluo-orange: {
+	color: #fc7e04;
+}
+.fluo-green: {
+	color: #7cfe04;
+}
+.fluo-blue: {
+	color: #04e6fc;
+}
+.fluo-purple: {
+	color: #9c1afc;
+}
+
+.bg-fluo-yellow {
+	background-color: #fcfe04;
+}
+.bg-fluo-pink {
+	background-color: #fc4efc;
+}
+.bg-fluo-orange: {
+	background-color: #fc7e04;
+}
+.bg-fluo-green: {
+	background-color: #7cfe04;
+}
+.bg-fluo-blue: {
+	background-color: #04e6fc;
+}
+.bg-fluo-purple: {
+	background-color: #9c1afc;
+}
+
+.fill-fluo-yellow {
+	fill: #fcfe04;
+}
+.fill-fluo-pink {
+	fill: #fc4efc;
+}
+.fill-fluo-orange: {
+	fill: #fc7e04;
+}
+.fill-fluo-green: {
+	fill: #7cfe04;
+}
+.fill-fluo-blue: {
+	fill: #04e6fc;
+}
+.fill-fluo-purple: {
+	fill: #9c1afc;
+}

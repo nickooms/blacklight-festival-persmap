@@ -1,49 +1,138 @@
+class Element {
+	constructor() {}
+	static fromString(string) {
+		Element.element.innerHTML = string
+		return Element.element.querySelector('*')
+	}
+	static get element() {
+		if (Element._element == null) {
+			Element._element = document.createElement('div')
+		}
+		return Element._element
+	}
+}
+
+class SVG extends Element {
+	constructor() {
+		super()
+	}
+	static get namespace() { return 'http://www.w3.org/2000/svg' }
+	static create(name, attrs) {
+		let element = document.createElementNS(SVG.namespace, name)
+		for (let attr in attrs) {
+			element.setAttribute(attr, attrs[attr])
+		}
+		return element
+	}
+}
+
 var
-//115,325,58,60
+
 widths = new Set(),
 heights = new Set(),
 propertyValues = new Map(),
 bboxTotal = new BBOX(),
-selectBox = {
-	x: 0,
-	y: 0,
-	box: null,
-	init: function(x, y, bbox) {
-		selectBox.left = bbox.left;
-		selectBox.top = bbox.top;
-		selectBox.x = x + selectBox.left;
-		selectBox.y = y + selectBox.top;
-		var box = selectBox.box;
-		if (box == null) {
-			box = document.createElement('div');
-			box.style.position = 'absolute';
-			box.style.border = '1px solid red';
-			document.body.appendChild(box);
-			selectBox.box = box;
+polygon = [],
+
+load = function() {
+	var width = 1000,
+		height = 750,
+		viewBox = `0 0 ${width} ${height}`,
+		version = '1.1',
+		defs = `<defs>
+	<style type="text/css">
+		<![CDATA[
+			path {
+				cursor: pointer;
+			}
+			path:hover {
+				stroke: #f00;
+				/*stroke-width: 10;
+				fill: #f00;*/
+			}
+		]]>
+	</style>
+</defs>`,
+		svg = SVG.create('svg', { width, height, viewBox, version });
+		/*svg = SVG.fromString(/*`<?xml version="1.0" standalone="no"?>
+			<?xml-stylesheet type="text/css" href="style-svg.css"?>
+			<?xml-stylesheet type="text/css" href="fluo.css"?>
+			`<svg ${xmlns(SVG.namespace)} width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" version="1.1"></svg>`);*/
+	//var div = $('div#svg');
+	//console.log(svg);
+	$('div#svg').appendChild(svg);
+	Podium.map(x => {
+		console.log(x);
+	});
+	//svg.innerHTML = defs;
+	createGroups(Podium).forEach(group => svg.appendChild(group));
+	//$('div#svg').innerHTML = createSVG(Podium);
+	initLayersList();
+	initStylesList();
+	rangeSlider();
+	initMenuButton();
+	var svg = $('svg');
+	svg.style.width = '100%';
+	svg.style.height = '100%';
+	//$('div#svg').addEventListener('mousedown', mousedown, false);
+	View.init();
+	var bboxView = View.bbox();
+	var view = new View(bboxView);
+	view.use(svg);
+	var zoomLeft = $('input#zoom-left');
+	zoomLeft.min = view.left;
+	zoomLeft.value = view.left;
+	zoomLeft.max = view.right;
+	var paths = [...$$('path')];
+	//console.log(paths.length);
+	//console.log(click);
+	//var i = 0;
+	paths.forEach(p => {
+		//console.log(i++);
+		//i++;
+		//if (i < 10) console.dir(p);
+		//p.addEventListener('mouseover', mouseover, false);
+		//p.addEventListener('mouseout', mouseout, false);
+		p.addEventListener('click', function(evt) {
+			console.log(777);
+		})
+		p.onclick = function(evt) {
+			console.log(888);
 		}
-		box.style.display = '';
-	},
-	show: function(x, y) {
-		var style =	selectBox.box.style,
-			left = x + selectBox.left,
-			top = y + selectBox.top;
-		style.left = `${Math.min(selectBox.x, left)}px`;
-		style.top = `${Math.min(selectBox.y, top)}px`;
-		style.width = `${Math.abs(selectBox.x - left)}px`;
-		style.height = `${Math.abs(selectBox.y - top)}px`;
-	},
-	stop: function() {
-		var rect = selectBox.box.getBoundingClientRect();
-		console.log(rect);
-		console.log($('svg').getBoundingClientRect());
-		console.log($('svg').getAttribute('viewBox'));
-		selectBox.box.style.display = 'none';
-	}
+	});
+	[...$$('legend')].forEach(legend => {
+		legend.addEventListener('click', clickLegend);
+		[...$$('*', legend.parentNode)].filter(noLegends).forEach(child => toggleDisplay(child.style));
+	});
+	$('div#menu-overlay').addEventListener('click', hideMenu, false);
+	//Podium A
+	/*var polygons = `<polygon points="453.29,351.39 443.77,347.25 443.8,327.6 453.3,330.81 453.29,351.39" style="fill:black;"/>
+		<polygon points="673.45,362.11 639.54,362.98 639.63,326.55 673.55,325.99 673.45,362.11" fill="${Fluo.Yellow}"/>
+		<polygon points="638.71,362.92 621.95,358.55 622.03,323.47 638.97,326.33 638.71,362.92" fill="${Fluo.Blue}"/>
+		<polygon points="603.39,363.9 568.28,364.8 568.54,216.11 603.7,216.49 603.39,363.9" fill="${Fluo.Pink}"/>
+		<polygon points="567.44,364.82 531.7,365.73 531.9,215.95 567.04,216.2 567.44,364.82" fill="${Fluo.Yellow}"/>
+		<polygon points="530.84,365.76 494.46,366.69 494.6,215.32 531.04,215.71 530.84,365.76" fill="${Fluo.Purple}"/>
+		<polygon points="493.58,366.47 456.46,367.38 456.54,214.93 493.72,215.31 493.58,366.47" fill="${Fluo.Yellow}"/>
+		<polygon points="451.92,367.77 451.92,214.88 455.73,214.91 455.65,367.68 451.92,367.77" fill="${Fluo.Orange}"/>
+		<polygon points="372.83,369.75 369,369.89 368.95,213.98 372.78,214.04 372.83,369.75" fill="${Fluo.Green}"/>
+		<polygon points="450.94,367.75 413.15,368.72 413.16,330.02 450.96,329.4 450.94,367.75" fill="${Fluo.Purple}"/>
+		<polygon points="412.24,368.5 373.8,369.53 373.74,330.67 412.25,330.04 412.24,368.5" fill="${Fluo.Yellow}"/>
+		<polygon points="368.02,369.87 328.73,370.87 328.64,213.55 367.32,213.95 368.02,369.87" fill="${Fluo.Orange}"/>
+		<polygon points="327.78,370.65 287.74,371.67 287.58,213.11 327.7,213.54 327.78,370.65" fill="${Fluo.Yellow}"/>
+		<polygon points="286.78,371.95 245.98,372.99 245.73,212.66 285.85,213.08 286.78,371.95" fill="${Fluo.Pink}"/>
+		<polygon points="244.99,373.01 203.39,374.12 203.07,212.21 243.95,212.68 244.99,373.01" fill="${Fluo.Yellow}"/>
+		<polygon points="158.99,375.21 115.77,376.31 115.6,334.95 158.89,334.2 158.99,375.21" fill="${Fluo.Blue}"/>
+		<polygon points="163.91,369.7 160.09,375.03 159.87,333.43 163.58,330.07 163.91,369.7" fill="${Fluo.Orange}"/>
+		<polygon points="451.06,291.27 413.16,291.78 413.18,176.13 451.12,176.85 451.06,291.27" fill="${Fluo.Purple}"/>
+		<polygon points="412.25,291.54 373.73,291.83 373.75,174.49 412.27,175.29 412.25,291.54" fill="${Fluo.Blue}"/>`;*/
+	//Podium B
+	var polygons = ``;
+	$('svg').innerHTML += polygons;
 },
 
-createSVG = function(layers) {
-	var SVG = 'http://www.w3.org/2000/svg',
-		ns = xmlns(SVG),
+/*createSVG = function(layers) {
+	var nsSVG = 'http://www.w3.org/2000/svg',
+		ns = xmlns(nsSVG),
 		w = 1000,
 		h = 750,
 		width = `width=${w.toFixed(3)}`,
@@ -51,7 +140,8 @@ createSVG = function(layers) {
 		viewBox = `viewBox="0.0 0.0 ${w} ${h}"`,
 		s = `<?xml version="1.0" standalone="no"?>
 <?xml-stylesheet type="text/css" href="style-svg.css"?>
-<svg ${SVG} ${width} ${height} ${viewBox} version="1.1">
+<?xml-stylesheet type="text/css" href="fluo.css"?>
+<svg ${nsSVG} ${width} ${height} ${viewBox} version="1.1">
 	${createGroups(layers)}
 </svg>`;
 	var sortedWidths = Array.from(widths).sort(sortFloat);
@@ -80,52 +170,34 @@ createSVG = function(layers) {
 	maxHeight.value = maxH;
 	maxHeight.max = maxH;
 	return s;
+},*/
+
+//createGroup = g => `<g${g.name ? ` id="group${g.hash}"` : ''}${g.display ? ` display="visible"` : ''}>${createChildren(g.children)}</g>`,
+
+createGroups = groups => {
+	//console.log(groups);
+	return (groups.children ? groups.children : groups).map(group => createGroup(group))
 },
 
-sortFloat = (a, b) => parseFloat(a) < parseFloat(b) ? -1 : 1,
-
-getMin = array => array.reduce((a, b) => Math.min(a, b), Infinity),
-getMax = array => array.reduce((a, b) => Math.max(a, b), -Infinity),
-
-selectOption = value => `<option value="${value}">${value}</option>`,
-
-datalistOption = value => `<option>${value}</option>`,
-
-populateDropdown = (id, options, value) => {
-	var dd = $(`select#${id}`);
-	dd.innerHTML = options.map(selectOption).join('');
-	if (value) dd.value = value;
+createGroup = group => {
+	//console.log(group.children);
+	let id = `group${group.hash}`,
+		display = group.display ? 'visible' : 'hidden',
+		g = SVG.create('g', { id, display }),
+		children = createChildren(group.children);
+	children.forEach(child => {
+		//console.log(child);
+		//child.forEach(c => g.appendChild(c));
+		g.appendChild(child);
+	});
+	return g;
 },
 
-populateDatalist = (id, options, value) => {
-	var dd = $(`datalist#${id}`);
-	dd.innerHTML = options.map(datalistOption).join('');
-	if (value) dd.value = value;
-},
+createChild = child => child.T === 'Group' ? createGroup(child) : createPath(child),
 
-xmlns = ns => `xmlns="${ns}"`,
-
-createGroup = g => `<g${g.name ? ` id="group${g.hash}"` : ''}${g.display ? ` display="visible"` : ''}>${createChildren(g.children)}</g>`,
-
-createGroups = list => list.map(createGroup).join(''),
-
-createChild = child => child.T === 'Group' ? createGroups([child]) : createPaths([child]),
-
-createChildren = list => list.map(c => createChild(c)),
-
-filterBySize = function(evt) {
-	var minWidth = $('input#min-width').value |0,
-		minHeight = $('input#min-height').value |0,
-		maxWidth = $('input#max-width').value |0,
-		maxHeight = $('input#max-height').value |0,
-		paths = $$('path');
-	console.log(minWidth, maxWidth, minHeight, maxHeight)
-	for (var path of paths) {
-		var width = path.getAttribute('width') |0,
-			height = path.getAttribute('height') |0;
-			inRange = (minWidth <= width && width <= maxWidth) && (minHeight <= height && height <= maxHeight)
-		path.setAttribute('display', inRange ? 'visible' : 'none');
-	}
+createChildren = list => {
+	//console.log(list);
+	return list.map(c => createChild(c));
 },
 
 getBBOX = function(path) {
@@ -153,11 +225,46 @@ getPoints = function(path) {
 	return points;
 },
 
+createPath = function(pa) {
+	var properties = properties = ['fill', 'fill-rule', 'stroke', 'stroke-width'],
+		d = pa.d,
+		cursor = 'pointer',
+		bbox = getBBOX(pa);
+	bboxTotal.add(bbox.min);
+	bboxTotal.add(bbox.max);
+	var width = parseFloat(bbox.width.toFixed(0));
+	var height = parseFloat(bbox.height.toFixed(0));
+	widths.add(width);
+	heights.add(height);
+	var props = { d, cursor, width, height };
+	for (var j = 0; j < properties.length; j++) {
+		var propertyName = properties[j],
+			property = pa[propertyName];
+		if (property)	{
+			if (!propertyValues.has(propertyName)) {
+				propertyValues.set(propertyName, new Set());
+			}
+			propertyValues.get(propertyName).add(property)
+			//if (propertyName === 'stroke-width' && property === '0.5') property = '0.1';
+			//s += `${propertyName}="${property}" `;
+			props[propertyName] = property;
+		}
+	}
+	var p = SVG.create('path', props);
+	p.addEventListener('click', function() {
+		alert(999);
+	})
+	return p;
+},
+
 createPaths = function(paths) {
-	var properties = properties = ['fill', 'fill-rule', 'stroke', 'stroke-width'];
-	var s = '';
+	return paths.map(p => createPath(p));
+	/*var s = '';
+	var ps = [];
 	for (var i = 0; i < paths.length; i++) {
-		var path = paths[i];
+		var path = paths[i],
+			d = path.d,
+			cursor = 'pointer';
 		var bbox = getBBOX(path);
 		bboxTotal.add(bbox.min);
 		bboxTotal.add(bbox.max);
@@ -165,7 +272,9 @@ createPaths = function(paths) {
 		var height = parseFloat(bbox.height.toFixed(0));
 		widths.add(width);
 		heights.add(height);
-		s += `<path d="${path.d}" cursor="pointer" `;
+		var props = { d, cursor, width, height };
+		
+		s += `<path ${xmlns(SVG.namespace)} d="${path.d}" cursor="pointer" `;
 		for (var j = 0; j < properties.length; j++) {
 			var propertyName = properties[j],
 				property = path[propertyName];
@@ -174,82 +283,25 @@ createPaths = function(paths) {
 					propertyValues.set(propertyName, new Set());
 				}
 				propertyValues.get(propertyName).add(property)
-				if (propertyName === 'stroke-width' && property === '0.5') property = '0.1';
+				//if (propertyName === 'stroke-width' && property === '0.5') property = '0.1';
 				s += `${propertyName}="${property}" `;
+				props[propertyName] = property;
 			}
 		}
+		var p = SVG.create('path', props);
+		ps.push(p);
 		s += ` width="${width}" height="${height}"/>`;
 	}
-	return s;
-},
-
-$ = (selector, n) => (n || document).querySelector(selector),
-
-$$ = (selector, n) => (n || document).querySelectorAll(selector),
-
-initLayersList = () => {
-	var fieldset = $('fieldset#layers');
-	fieldset.innerHTML += Podium.map(layer =>
-		`<div layer-id="${layer.hash}">
-			<input id="chk${layer.hash}" class="regular-checkbox" type="checkbox" checked/>
-			<label for="chk${layer.hash}" style="color: #fff;">${layer.name}</label>
-		</div>`).join('');
-	[...$$('input', fieldset)].forEach(checkbox => checkbox.addEventListener('change', checkboxChange));
-},
-
-checkboxChange = evt => $(`g#${evt.target.id.replace('chk', 'group')}`).setAttribute('display', evt.target.checked ? 'visible' : 'none'),
-
-clickLegend = evt => [...$$('*', evt.target.parentNode)].filter(noLegends).map(getElementStyle).forEach(toggleDisplay),
-
-noLegends = element => element.tagName !== 'LEGEND',
-
-getElementStyle = element => element.style,
-
-toggleDisplay = style => style.display = style.display === 'none' ? '' : 'none',
-
-initStylesList = () => $('fieldset#styles').innerHTML += [...propertyValues].map(stylesList).join(''),
-
-stylesList = property =>
-`<fieldset id="fieldset${property[0]}">
-	<legend>${property[0]}</legend>
-	${[...property[1]].map(styleList, property[0]).join('')}
-</fieldset>`,
-
-styleList = (v, prop) =>
-`<input id="style${prop}${v}" type="checkbox" checked/>
-<label for="style${prop}${v}" style="color: #fff;">${v}</label><br>`,
-
-toggleLayer = function(event) {
-	var target = event.target;
-	while (!target.getAttribute('layer-id')) target = target.parentNode;
-	var	checkbox = $('input', target),
-		checked = !checkbox.checked,
-		layerId = target.getAttribute('layer-id'),
-		layer = document.getElementById(layerId);
-	layer.setAttribute('display', checked ? 'visible' : 'none');
-},
-
-mousedown = function(evt) {
-	selectBox.init(evt.offsetX, evt.offsetY, evt.target.getBoundingClientRect());
-	document.addEventListener('mousemove', mousemove, false);
-	document.addEventListener('mouseup', mouseup, false);
-},
-
-mousemove = function(evt) {
-	selectBox.show(evt.offsetX, evt.offsetY);
-},
-
-mouseup = function(evt) {
-	document.removeEventListener('mousemove', mousemove);
-	document.removeEventListener('mouseup', mouseup);
-	selectBox.stop();
+	return ps;*/
 },
 
 click = function(evt) {
+	console.log(666);
 	var element = evt.target,
 		d = element.getAttribute('d'),
 		points = getPoints({ d }),
-		lines = [],
+		//lines = [],
+		circles = [],
 		paths = d
 			.split('M')
 			.filter(p => p != '')
@@ -267,40 +319,76 @@ click = function(evt) {
 			}),
 		b = new BBOX(),
 		length = points.length;
-	//console.log(paths);
-	for (var i = 0; i < length; i++) {
-		var point = points[i];
-		b.add(point);
-	}
+	var circles = points.map(p => `<circle cx="${p.x}" cy="${p.y}" r="0.1" stroke="red" stroke-width="0.2"/>`)
+	points.forEach(point => b.add(point));
 	b.grow();
-	for (var i = 0; i < paths.length; i++) {
-		var point1 = paths[i][0],
-			point2 = paths[i][1],
-			line = `<line x1="${point1.x}" y1="${point1.y}" x2="${point2.x}" y2="${point2.y}" stroke="green" stroke-width="0.05"/>`;
-		lines.push(line);
-	}
+	var lines = paths.map(p => `<line x1="${p[0].x}" y1="${p[0].y}" x2="${p[1].x}" y2="${p[1].y}" stroke="green" stroke-width="0.05" cursor="pointer"/>`);
 	var rect = `<rect x="${b.min.x}" y="${b.min.y}" width="${b.width}" height="${b.height}" stroke="blue" stroke-width="0.05" fill="white"/>`;
-	//console.log(d);
-	//console.log(rect);
 	var svg = $('svg');
-	svg.innerHTML += `<g id="group-select-lines">${rect + lines.join('')}</g>`;
+	svg.innerHTML += `<g id="group-select-lines">${rect + /*lines.join('') +*/ circles.join('')}</g>`;
 	var g = $('g#group-select-lines', svg);
 	g.addEventListener('mouseover', function(evt) {
 		g.setAttribute('fill-opacity', '0.5');
-		[...$$('line', g)].forEach(line => line.setAttribute('stroke-dasharray', '0.1, 0.1'));
 	}, false);
-	g.addEventListener('mouseout', function(evt) {
-		g.removeAttribute('fill-opacity');
-		[...$$('line', g)].forEach(line => line.removeAttribute('stroke-dasharray'));
-	}, false);
+	[...$$('circle', g)].forEach(line => {
+		//line.setAttribute('stroke-dasharray', '0.1, 0.1');
+		//line.addEventListener('mouseover', mouseoverLine, false);
+		//line.addEventListener('mouseout', mouseoutLine, false);
+		line.addEventListener('click', clickLine, false);
+	});
+	//g.addEventListener('mouseout', function(evt) {
+		//g.removeAttribute('fill-opacity');
+	//}, false);
+	[...$$('line', g)].forEach(line => line.removeAttribute('stroke-dasharray'));
 	b.grow();
-	var viewBox = [b.min.x, b.min.y, b.width, b.height].join(',');
-	svg.setAttribute('viewBox', viewBox);
+	var viewBox = new View(b);
+	viewBox.use(svg);
+	//var viewBox = [b.min.x, b.min.y, b.width, b.height].join(',');
+	//svg.setAttribute('viewBox', viewBox);
 	//console.log(points);
 	/*element.setAttribute('_stroke', element.getAttribute('stroke'));
 	element.setAttribute('_stroke-width', element.getAttribute('stroke-width'));
 	element.setAttribute('stroke', 'red');
 	element.setAttribute('stroke-width', '0.2');*/
+},
+
+mouseoverLine = function(evt) {
+	var target = evt.target;
+	if (target.getAttribute('selected') != 'true') {
+		target.setAttribute('stroke-width', '0.1');
+		target.setAttribute('stroke-dasharray', '0.1, 0.1');
+		target.setAttribute('stroke', 'red');
+	}
+},
+
+mouseoutLine = function(evt) {
+	var target = evt.target;
+	if (target.getAttribute('selected') != 'true') {
+		target.setAttribute('stroke-width', '0.05');
+		target.removeAttribute('stroke-dasharray');
+		target.setAttribute('stroke', 'green');
+	}
+},
+
+clickLine = function(evt) {
+	evt.target.setAttribute('r', '0.2');
+	if (localStorage.polygons == null) {
+		localStorage.polygons = JSON.stringify({});
+	}
+	var polygons = JSON.parse(localStorage.polygons);
+	var polygon = null;
+	var index = null;
+	for (var p in polygons) {
+		index = p;
+		polygon = polygons[p];
+	}
+	if (polygon == null) {
+		index = 0;
+		polygon = [];
+	}
+	polygon.push([parseFloat(evt.target.getAttribute('cx')), parseFloat(evt.target.getAttribute('cy'))]);
+	polygons[index] = polygon;
+	localStorage.polygons = JSON.stringify(polygons);
 },
 
 mouseover = function(evt) {
@@ -315,48 +403,6 @@ mouseout = function(evt) {
 	var element = evt.target;
 	element.setAttribute('stroke', element.getAttribute('_stroke'));
 	//element.setAttribute('stroke-width', element.getAttribute('_stroke-width'));
-},
-
-hideMenu = function() {
-	$('.js-menu-button').classList.toggle('menu-button--open');
-	$('div#menu-overlay').classList.toggle('open');
-	$('div#controls').classList.toggle('open');
-},
-
-load = function() {
-	$('div#svg').innerHTML = createSVG(Podium);
-	initLayersList();
-	initStylesList();
-	rangeSlider();
-	initMenuButton();
-	var svg = $('svg');
-	svg.style.width = '100%';
-	svg.style.height = '100%';
-	$('div#svg').addEventListener('mousedown', mousedown, false);
-	//console.log(propertyValues);
-	//console.log(bboxTotal);
-	var view = {
-		left: bboxTotal.min.x |0,
-		top: bboxTotal.min.y |0,
-		width: bboxTotal.width |0,
-		height: bboxTotal.height |0
-	}
-	view = { left: 115, top: 325, width: 58, height: 60 };
-	var viewBox = [view.left, view.top, view.width, view.height].join(',');
-	svg.setAttribute('viewBox', viewBox);
-	$('input#zoom-left').min = view.left;
-	$('input#zoom-left').value = view.left;
-	$('input#zoom-left').max = view.left + view.width;
-	[...$$('path')].forEach(p => {
-		p.addEventListener('mouseover', mouseover, false);
-		p.addEventListener('mouseout', mouseout, false);
-		p.addEventListener('click', click, false);
-	});
-	[...$$('legend')].forEach(legend => {
-		legend.addEventListener('click', clickLegend);
-		[...$$('*', legend.parentNode)].filter(noLegends).forEach(child => toggleDisplay(child.style));
-	});
-	$('div#menu-overlay').addEventListener('click', hideMenu, false);
-};
+}
 
 document.addEventListener('DOMContentLoaded', load, false);

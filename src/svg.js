@@ -1,90 +1,3 @@
-class Element {
-	constructor() {}
-	static fromString(string) {
-		Element.element.innerHTML = string
-		return Element.element.querySelector('*')
-	}
-	static get element() {
-		if (Element._element == null) {
-			Element._element = document.createElement('div')
-		}
-		return Element._element
-	}
-}
-
-class SVG extends Element {
-	constructor() {
-		super()
-	}
-	static get namespace() { return 'http://www.w3.org/2000/svg' }
-	static create(name, attrs) {
-		let element = document.createElementNS(SVG.namespace, name)
-		for (let attr in attrs) {
-			element.setAttribute(attr, attrs[attr])
-		}
-		return element
-	}
-	static Layer(x) {
-		let id = `group${x.hash}`,
-			name = x.name,
-			display = x.display ? 'visible' : 'hidden',
-			attrs = { id, name, display },
-			g = SVG.create('g', attrs);
-			x.children.map(SVG.Group).forEach(group => g.appendChild(group));
-		//console.log(x.children);
-		return g;
-	}
-	static Group(x) {
-		let id = `group${x.hash}`,
-			attrs = { id },
-			g = SVG.create('g', attrs);
-		x.children.map(SVG.GroupOrPath).forEach(gop => g.appendChild(gop));
-		/*x.children.forEach(p => p.addEventListener('click', function(evt) {
-			console.log(6666666)
-		}, true);*/
-		return g;
-	}
-	static GroupOrPath(x) {
-		switch (x.T) {
-			case 'Group':
-				return SVG.Group(x)
-			case 'Path':
-				return SVG.Path(x)
-			default:
-				break;
-		}
-	}
-	static Path(x) {
-		let properties = ['fill', 'fill-rule', 'stroke', 'stroke-width'],
-			id = `path${x.hash}`,
-			d = x.d,
-			cursor = 'pointer',
-			bbox = getBBOX(x);
-		bboxTotal.add(bbox.min);
-		bboxTotal.add(bbox.max);
-		let width = parseFloat(bbox.width.toFixed(0)),
-			height = parseFloat(bbox.height.toFixed(0)),
-			attrs = { id, d, cursor, width, height };
-		for (var j = 0; j < properties.length; j++) {
-			var propertyName = properties[j],
-				property = x[propertyName];
-			if (property)	{
-				if (!propertyValues.has(propertyName)) {
-					propertyValues.set(propertyName, new Set());
-				}
-				propertyValues.get(propertyName).add(property)
-				//if (propertyName === 'stroke-width' && property === '0.5') property = '0.1';
-				//s += `${propertyName}="${property}" `;
-				attrs[propertyName] = property;
-			}
-		}
-		let path = SVG.create('path', attrs);
-		widths.add(width);
-		heights.add(height);
-		return path;
-	}
-}
-
 var
 
 widths = new Set(),
@@ -162,34 +75,11 @@ load = function() {
 		[...$$('*', legend.parentNode)].filter(noLegends).forEach(child => toggleDisplay(child.style));
 	});
 	$('div#menu-overlay').addEventListener('click', hideMenu, false);
-	//Podium A
-	/*var polygons = `<polygon points="453.29,351.39 443.77,347.25 443.8,327.6 453.3,330.81 453.29,351.39" style="fill:black;"/>
-		<polygon points="673.45,362.11 639.54,362.98 639.63,326.55 673.55,325.99 673.45,362.11" fill="${Fluo.Yellow}"/>
-		<polygon points="638.71,362.92 621.95,358.55 622.03,323.47 638.97,326.33 638.71,362.92" fill="${Fluo.Blue}"/>
-		<polygon points="603.39,363.9 568.28,364.8 568.54,216.11 603.7,216.49 603.39,363.9" fill="${Fluo.Pink}"/>
-		<polygon points="567.44,364.82 531.7,365.73 531.9,215.95 567.04,216.2 567.44,364.82" fill="${Fluo.Yellow}"/>
-		<polygon points="530.84,365.76 494.46,366.69 494.6,215.32 531.04,215.71 530.84,365.76" fill="${Fluo.Purple}"/>
-		<polygon points="493.58,366.47 456.46,367.38 456.54,214.93 493.72,215.31 493.58,366.47" fill="${Fluo.Yellow}"/>
-		<polygon points="451.92,367.77 451.92,214.88 455.73,214.91 455.65,367.68 451.92,367.77" fill="${Fluo.Orange}"/>
-		<polygon points="372.83,369.75 369,369.89 368.95,213.98 372.78,214.04 372.83,369.75" fill="${Fluo.Green}"/>
-		<polygon points="450.94,367.75 413.15,368.72 413.16,330.02 450.96,329.4 450.94,367.75" fill="${Fluo.Purple}"/>
-		<polygon points="412.24,368.5 373.8,369.53 373.74,330.67 412.25,330.04 412.24,368.5" fill="${Fluo.Yellow}"/>
-		<polygon points="368.02,369.87 328.73,370.87 328.64,213.55 367.32,213.95 368.02,369.87" fill="${Fluo.Orange}"/>
-		<polygon points="327.78,370.65 287.74,371.67 287.58,213.11 327.7,213.54 327.78,370.65" fill="${Fluo.Yellow}"/>
-		<polygon points="286.78,371.95 245.98,372.99 245.73,212.66 285.85,213.08 286.78,371.95" fill="${Fluo.Pink}"/>
-		<polygon points="244.99,373.01 203.39,374.12 203.07,212.21 243.95,212.68 244.99,373.01" fill="${Fluo.Yellow}"/>
-		<polygon points="158.99,375.21 115.77,376.31 115.6,334.95 158.89,334.2 158.99,375.21" fill="${Fluo.Blue}"/>
-		<polygon points="163.91,369.7 160.09,375.03 159.87,333.43 163.58,330.07 163.91,369.7" fill="${Fluo.Orange}"/>
-		<polygon points="451.06,291.27 413.16,291.78 413.18,176.13 451.12,176.85 451.06,291.27" fill="${Fluo.Purple}"/>
-		<polygon points="412.25,291.54 373.73,291.83 373.75,174.49 412.27,175.29 412.25,291.54" fill="${Fluo.Blue}"/>`;*/
-	//Podium B
-	var polygons = ``;
-	//$('svg').innerHTML += polygons;
 	svg.addEventListener('click', function(evt) {
 		var target = evt.target
 		switch (target.tagName) {
 			case 'path':
-				click(target);
+				click(evt, target);
 				break;
 			case 'g':
 				if (target.id === 'group-select-lines') {
@@ -402,6 +292,9 @@ click = function(evt, target) {
 	var g = $('g#group-select-lines', svg);
 	g.addEventListener('mouseover', function(evt) {
 		g.setAttribute('fill-opacity', '0.5');
+	}, false);
+	g.addEventListener('mouseout', function(evt) {
+		g.setAttribute('fill-opacity', '1.0');
 	}, false);
 	[...$$('circle', g)].forEach(line => {
 		//line.setAttribute('stroke-dasharray', '0.1, 0.1');

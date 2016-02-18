@@ -40,7 +40,6 @@
     "hash-sum": "^1.0.2",
     "jsdom": "^8.0.2",
     "kerberos": "0.0.18",
-    "libxslt": "^0.6.3",
     "mongoose": "^4.4.1",
     "node-exceptions": "^1.0.0",
     "node-progress": "^0.1.0",
@@ -53,6 +52,8 @@
     "supports-color": "^3.1.2"
   },
   "devDependencies": {
+  	"libxslt": "^0.6.3",
+  	
     "autoprefixer": "^6.3.2",
     "browser-sync": "^2.11.1",
     "eslint": "^2.0.0",

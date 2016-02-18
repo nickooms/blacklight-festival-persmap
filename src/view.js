@@ -19,7 +19,6 @@ class View {
 	}
 
 	static zoomIn() {
-		console.log('zoomIn');
 		var w = View.active.width;
 		var h = View.active.height;
 		View.active.left += w / 4;
@@ -29,7 +28,6 @@ class View {
 		$('svg').setAttribute('viewBox', [View.active.left, View.active.top, View.active.width, View.active.height].join(','));
 	}
 	static zoomOut() {
-		console.log('zoomOut');
 		var w = View.active.width;
 		var h = View.active.height;
 		View.active.left -= w / 2;
@@ -44,11 +42,9 @@ class View {
 		var top = View.active.top + (h / factor);
 		var width = w / factor;
 		var height = h / factor;
-		console.log(left, top, width, height);
 		var bbox = new BBOX();
 		bbox.add(new Point(left, top));
 		bbox.add(new Point(left + width, top + height));
-		console.log(bbox);
 		var view = new View(bbox);
 		view.use($('svg'));
 	}
@@ -78,12 +74,10 @@ class View {
 		View.list.pop();
 		var view = View.list[View.list.length - 1];
 		var box = view.box;
-		console.log(box);
 		svg.setAttribute('viewBox', box);
 		View.active = view;
 	}
 	static bbox() {
-		//console.time('View.bbox()');
 		var bboxView = new BBOX(),
 		visibleLayers = [...$$('g', $('svg'))]
 			.filter(layer => layer.getAttribute('display') === 'visible');
@@ -95,26 +89,34 @@ class View {
 				bboxView.add(bbox.max);
 			});
 		});
-		//console.timeEnd('View.bbox()');
-		//console.log(bboxView.toString());
 		return bboxView;
+	}
+	static fill() {
+		var polygon = JSON.parse(localStorage.polygons)[0];
+		polygon.push(polygon[0]);
+		var filled = `<polygon points="${polygon.map(p => p.join(',')).join(' ')}" fill="${Fluo.Yellow}"/>`;
+		$('svg').innerHTML += filled;
+		delete localStorage.polygons;
+
 	}
 	static init() {
 		View.list = [];
-		document.body.addEventListener('keyup', function(evt) {
-			switch (evt.keyCode) {
-				case 107: View.zoomIn(); break;
-				case 109: View.zoomOut(); break;
-				case 37: View.active.moveLeft(); break;
-				case 38: View.active.moveUp(); break;
-				case 40: View.active.moveDown(); break;
-				case 39: View.active.moveRight(); break;
-				case 102: View.reset(); break;
-				case 27: console.log('restore'); View.restore(); console.log(View.list);break;
-				default:
-					//console.log(event.keyCode);
-					break;
-			}
-		}, false);
+		document.body.addEventListener('keyup', doCommand, false);
+	}
+}
+
+function doCommand(evt) {
+	var view = View.active;
+	switch (evt.keyCode) {
+		case 107: return View.zoomIn();
+		case 109: return View.zoomOut();
+		case 37: 	return view.moveLeft();
+		case 38: 	return view.moveUp();
+		case 40: 	return view.moveDown();
+		case 39: 	return view.moveRight();
+		case 102: return View.reset();
+		case 122: return View.fill();
+		case 27: 	return View.restore();
+		default: break;
 	}
 }

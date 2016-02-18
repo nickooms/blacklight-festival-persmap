@@ -17,7 +17,6 @@ class SVG extends Element {
 			attrs = { id, name, display },
 			g = SVG.create('g', attrs);
 			x.children.map(SVG.Group).forEach(group => g.appendChild(group));
-		//console.log(x.children);
 		return g;
 	}
 	static Group(x) {
@@ -25,9 +24,6 @@ class SVG extends Element {
 			attrs = { id },
 			g = SVG.create('g', attrs);
 		x.children.map(SVG.GroupOrPath).forEach(gop => g.appendChild(gop));
-		/*x.children.forEach(p => p.addEventListener('click', function(evt) {
-			console.log(6666666)
-		}, true);*/
 		return g;
 	}
 	static GroupOrPath(x) {
@@ -51,17 +47,15 @@ class SVG extends Element {
 		let width = parseFloat(bbox.width.toFixed(0)),
 			height = parseFloat(bbox.height.toFixed(0)),
 			attrs = { id, d, cursor, width, height };
-		for (var j = 0; j < properties.length; j++) {
-			var propertyName = properties[j],
-				property = x[propertyName];
-			if (property)	{
-				if (!propertyValues.has(propertyName)) {
-					propertyValues.set(propertyName, new Set());
+		for (let name of properties) {
+			let	value = x[name];
+			if (value)	{
+				if (!propertyValues.has(name)) {
+					propertyValues.set(name, new Set());
 				}
-				propertyValues.get(propertyName).add(property)
-				//if (propertyName === 'stroke-width' && property === '0.5') property = '0.1';
-				//s += `${propertyName}="${property}" `;
-				attrs[propertyName] = property;
+				propertyValues.get(name).add(value)
+				if (name === 'stroke-width' && value === '0.5') value = '0.2';
+				attrs[name] = value;
 			}
 		}
 		let path = SVG.create('path', attrs);

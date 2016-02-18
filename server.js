@@ -3,7 +3,7 @@ const
 //svgFilename = 'data/Podium A v1-3D.svg',
 svgFilename = 'data/Podium C v1-3D.svg',
 host = '127.0.0.1',
-port = 1337,
+port = 403,
 
 fs = require('fs'),
 http = require('http'),

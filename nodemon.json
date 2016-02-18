@@ -1,5 +1,5 @@
 {
 	"ext": "html js css",
 	"verbose": true,
-	"watch": ["index.js", "src/*.*"]
+	"watch": ["server.js", "src/*.*"]
 }

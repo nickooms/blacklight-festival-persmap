@@ -1,6 +1,6 @@
 'use strict'
 const
-//svgFilename = 'data/Podium A v1-3D.svg',
+
 svgFilename = 'data/Podium C v1-3D.svg',
 host = '127.0.0.1',
 port = 403,
@@ -14,7 +14,6 @@ cli = require('clui'),
 
 //db = require('./src/db'),
 Exception = require('./src/errors'),
-preben
 //Drawing = require('./src/drawing'),
 //Layer = require('./src/layer'),
 //Path = require('./src/path'),

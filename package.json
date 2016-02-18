@@ -2,7 +2,7 @@
   "name": "blacklight-festival-persmap",
   "version": "1.0.0",
   "description": "Persmap Blacklight Festival",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "scss": "node-sass --output-style compressed -o dist/css src/scss",
@@ -53,7 +53,7 @@
   },
   "devDependencies": {
   	"libxslt": "^0.6.3",
-  	
+
     "autoprefixer": "^6.3.2",
     "browser-sync": "^2.11.1",
     "eslint": "^2.0.0",

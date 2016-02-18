@@ -1,5 +1,7 @@
 'use strict'
-const
+
+require('./server')
+/*const
 //svgFilename = 'data/Podium A v1-3D.svg',
 svgFilename = 'data/Podium C v1-3D.svg',
 host = '127.0.0.1',
@@ -214,4 +216,4 @@ db.connect()
 		})
 		.listen(port, host, () => log(`Server running at http://${host}:${port}/`))
 	})
-	.catch(error)
+	.catch(error)*/

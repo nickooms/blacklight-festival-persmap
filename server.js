@@ -12,7 +12,7 @@ async = require('async'),
 chalk = require('chalk'),
 cli = require('clui'),
 
-db = require('./src/db'),
+//db = require('./src/db'),
 Exception = require('./src/errors'),
 Drawing = require('./src/drawing'),
 Layer = require('./src/layer'),
@@ -201,9 +201,9 @@ getFile = filename => new Promise((resolve, reject) => {
 	}
 })
 
-db.connect()
-	.then(() => {
-		log('MongoDB connected')
+//db.connect()
+//	.then(() => {
+		//log('MongoDB connected')
 		http.createServer((req, res) => {
 			let url = req.url
 			switch(url) {
@@ -216,5 +216,5 @@ db.connect()
 			sendFile(res, `src/${getFilename(url)}`, getContentType(url))
 		})
 		.listen(port, host, () => log(`Server running at http://${host}:${port}/`))
-	})
-	.catch(error)
+//	})
+//	.catch(error)

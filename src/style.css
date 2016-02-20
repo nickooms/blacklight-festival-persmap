@@ -29,7 +29,8 @@ fieldset {
 }
 
 svg {
-	margin-top: -24px;
+	margin-top: -46px;
+	/*border: 1px solid #000;*/
 }
 
 div#layers, div#sizes, div#styles {

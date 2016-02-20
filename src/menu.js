@@ -17,8 +17,8 @@ filterBySize = function(evt) {
 		paths = $$('path');
 	for (let path of paths) {
 		let	width = path.getAttribute('width') |0,
-			height = path.getAttribute('height') |0;
-			inRange = (minWidth <= width && width <= maxWidth) && (minHeight <= height && height <= maxHeight)
+			height = path.getAttribute('height') |0,
+			inRange = (minWidth <= width && width <= maxWidth) && (minHeight <= height && height <= maxHeight);
 		path.setAttribute('display', inRange ? 'visible' : 'none');
 	}
 },

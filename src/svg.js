@@ -6,20 +6,6 @@ heights = new Set(),
 propertyValues = new Map(),
 bboxTotal = new BBOX(),
 polygon = [],
-css = `path {
-	cursor: pointer;
-}
-path:hover {
-	stroke: #f00;
-}
-circle {
-	stroke: red;
-	stroke-width: 0.2;
-}
-circle:hover {
-	stroke: yellow;
-	stroke-width: 0.5;
-}`,
 
 load = function() {
 	const
@@ -30,15 +16,17 @@ load = function() {
 		svg = SVG.create('svg', { width, height, viewBox, version }),
 		defs = SVG.create('defs'),
 		style = SVG.create('style', { type: 'text/css' });
+
 	$('div#svg').appendChild(svg);
 	svg.appendChild(defs);
 	defs.appendChild(style);
-	style.textContent = css;
+	style.textContent = CSS;
 	Podium.map(SVG.Layer).forEach(x => svg.appendChild(x));
 	initLayersList();
 	initStylesList();
 	rangeSlider();
 	initMenuButton();
+	$('button#btnFilterSizes').addEventListener('click', filterBySize, false);
 	let root = $('svg');
 	root.style.width = '100%';
 	root.style.height = '100%';
@@ -71,7 +59,8 @@ load = function() {
 			default:
 				break;
 		}
-	})
+	});
+	fillPodium();
 },
 
 createGroups = groups => (groups.children ? groups.children : groups).map(group => createGroup(group)),
